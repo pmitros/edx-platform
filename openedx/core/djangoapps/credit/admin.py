@@ -1,8 +1,8 @@
 """
 Django admin page for credit eligibility
 """
-from ratelimitbackend import admin
 from .models import CreditCourse, CreditProvider
+from django.contrib import admin
 
 admin.site.register(CreditCourse)
 admin.site.register(CreditProvider)

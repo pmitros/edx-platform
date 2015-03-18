@@ -2,8 +2,13 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 
 # There is a course creators admin table.
-from ratelimitbackend import admin
+from django.contrib import admin
+from ratelimitbackend.admin import autodiscover as ratelimit_autodiscover
+from edx_admin.admin import RatelimitSudoAdminSite
+
+admin.site = RatelimitSudoAdminSite()
 admin.autodiscover()
+ratelimit_autodiscover()
 
 # pylint: disable=bad-continuation
 
@@ -50,6 +55,8 @@ urlpatterns = patterns(
     url(r'^heartbeat$', include('heartbeat.urls')),
 
     url(r'^user_api/', include('openedx.core.djangoapps.user_api.legacy_urls')),
+
+    url(r'^sudo/$', 'sudo.views.sudo'),
 )
 
 # User creation and updating views
