@@ -1,7 +1,7 @@
 """ Contains the APIs for course credit requirements """
 
 from .exceptions import InvalidCreditRequirements
-from .models import CreditCourse, CreditRequirement
+from .models import CreditCourse, CreditRequirement, CreditRequirementStatus, CreditEligibility
 from openedx.core.djangoapps.credit.exceptions import InvalidCreditCourse
 
 
@@ -109,6 +109,91 @@ def get_credit_requirements(course_key, namespace=None):
         }
         for requirement in requirements
     ]
+
+
+def get_credit_requirement_status(course_key, username):
+    """ Retrieve the user's status for each credit requirement in the course.
+
+    Args:
+        course_key (CourseKey): The identifier for course
+        username (str): The identifier of the user
+
+    Example:
+        >>> get_credit_requirement_status("course-v1-edX-DemoX-1T2015", "john")
+
+                [
+                    {
+                        "namespace": "verification",
+                        "name": "verification",
+                        "criteria": {},
+                        "status": "satisfied",
+                    },
+                    {
+                        "namespace": "reverification",
+                        "name": "midterm",
+                        "criteria": {},
+                        "status": "Not satisfied",
+                    },
+                    {
+                        "namespace": "proctored_exam",
+                        "name": "final",
+                        "criteria": {},
+                        "status": "error",
+                    },
+                    {
+                        "namespace": "grade",
+                        "name": "grade",
+                        "criteria": {"min_grade": 0.8},
+                        "status": None,
+                    },
+                ]
+
+    Returns:
+        list of requirement statuses
+    """
+    requirements = CreditRequirement.get_course_requirements(course_key)
+    statuses = []
+    for requirement in requirements:
+        status = CreditRequirementStatus.get_status(requirement, username)
+        statuses.append({
+            "namespace": requirement.namespace,
+            "name": requirement.name,
+            "criteria": requirement.criteria,
+            "status": status.status if status else None,
+            "date": status.created.strftime('%m/%d/%Y') if status else None
+        })
+    return statuses
+
+
+def get_credit_eligibility(username):
+    eligibilities = CreditEligibility.get_user_eligibility(username)
+    user_eligibilities = {}
+    for eligibility in eligibilities:
+        user_eligibilities[unicode(eligibility.course.course_key)] = {
+            "is_eligible": True,
+            "created_at": eligibility.created,
+            "providers": [
+                {
+                    "id": provider.provider_id,
+                    "display_name": provider.display_name
+                }
+                for provider in eligibility.course.get_providers()
+            ]
+        }
+
+    return user_eligibilities
+
+
+def is_credit_course(course_key):
+    """Check if the given course is a credit course
+
+    Arg:
+        course_key (CourseKey): The identifier for course
+
+    Returns:
+        True if course is credit course else False
+    """
+    return CreditCourse.is_credit_course(course_key)
 
 
 def _get_requirements_to_disable(old_requirements, new_requirements):
