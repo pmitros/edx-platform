@@ -2085,6 +2085,7 @@ class TestEmailMessageWithCustomICRVBlock(ModuleStoreTestCase):
             body
         )
 
+
 class TestEmailMessageWithDefaultICRVBlock(ModuleStoreTestCase):
     """
     Test for In-course Re-verification
