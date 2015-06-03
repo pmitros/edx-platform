@@ -4,6 +4,7 @@ import ddt
 
 from django.test import TestCase, RequestFactory
 from django.test.utils import override_settings
+from django.conf import settings
 from mock import patch
 from nose.plugins.attrib import attr
 
@@ -24,6 +25,9 @@ from certificates.models import (
 )
 from certificates.queue import XQueueCertInterface, XQueueAddToQueueError
 from certificates.tests.factories import GeneratedCertificateFactory
+
+FEATURES_WITH_CERTS_ENABLED = settings.FEATURES.copy()
+FEATURES_WITH_CERTS_ENABLED['CERTIFICATES_HTML_VIEW'] = True
 
 
 @attr('shard_1')
@@ -146,6 +150,19 @@ class GenerateUserCertificatesTest(ModuleStoreTestCase):
         self.assertEqual(cert.status, 'error')
         self.assertIn(self.ERROR_REASON, cert.error_reason)
 
+    @override_settings(FEATURES=FEATURES_WITH_CERTS_ENABLED)
+    def test_new_cert_requests_returns_generating_for_html_certificate(self):
+        """
+        Test no message sent to Xqueue if HTML certificate view is enabled
+        """
+        self._setup_course_certificate()
+        with self._mock_passing_grade():
+            certs_api.generate_user_certificates(self.student, self.course.id)
+
+        # Verify that the certificate has status 'generating'
+        cert = GeneratedCertificate.objects.get(user=self.student, course_id=self.course.id)
+        self.assertEqual(cert.status, 'generating')
+
     @contextmanager
     def _mock_passing_grade(self):
         """Mock the grading function to always return a passing grade. """
@@ -165,6 +182,26 @@ class GenerateUserCertificatesTest(ModuleStoreTestCase):
                 mock_send_to_queue.side_effect = XQueueAddToQueueError(1, self.ERROR_REASON)
 
             yield mock_send_to_queue
+
+    def _setup_course_certificate(self):
+        """
+        Creates certificate configuration for course
+        """
+        certificates = [
+            {
+                'id': 1,
+                'name': 'Test Certificate Name',
+                'description': 'Test Certificate Description',
+                'course_title': 'tes_course_title',
+                'org_logo_path': '/t4x/orgX/testX/asset/org-logo.png',
+                'signatories': [],
+                'version': 1,
+                'is_active': True
+            }
+        ]
+        self.course.certificates = {'certificates': certificates}
+        self.course.save()
+        self.store.update_item(self.course, self.user.id)
 
 
 @attr('shard_1')
