@@ -43,9 +43,8 @@ from openedx.core.djangoapps.user_api.accounts import NAME_MIN_LENGTH
 from openedx.core.djangoapps.user_api.accounts.api import get_account_settings, update_account_settings
 from openedx.core.djangoapps.user_api.errors import UserNotFound, AccountValidationError
 
-from openedx.core.djangoapps.credit.api import get_credit_requirement, set_credit_requirement_status
-from commerce import ecommerce_api_client
-from course_modes.models import CourseMode
+from openedx.core.djangoapps.credit.api import get_credit_requirement,\
+    set_credit_requirement_status
 from student.models import CourseEnrollment
 from shoppingcart.models import Order, CertificateItem
 from shoppingcart.processors import (
