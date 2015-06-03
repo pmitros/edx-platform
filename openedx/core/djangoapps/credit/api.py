@@ -125,7 +125,7 @@ def get_credit_requirement(course_key, namespace, location):
     return CreditRequirement.get_course_requirement(course_key, namespace, location)
 
 
-def set_credit_requirement_status(user_name, requirement, status="satisfied"):
+def set_credit_requirement_status(user_name, requirement, status="satisfied", reason={}):
     """Update Credit Requirement Status for given username and requirement
         if exists else add new
 
@@ -134,7 +134,8 @@ def set_credit_requirement_status(user_name, requirement, status="satisfied"):
         requirement(CreditRequirement): CreditRequirement object
         status(str): status of the requirement
     """
-    CreditRequirementStatus.add_or_update_requirement_status(user_name, requirement, status)
+    CreditRequirementStatus.add_or_update_requirement_status(
+        user_name, requirement, status, reason)
 
 
 def _get_requirements_to_disable(old_requirements, new_requirements):
