@@ -60,7 +60,7 @@ class UpdateMinGradeRequirementFakeViewEnabledTest(UpdateMinGradeRequirementFake
         """
         self.client.logout()
         response = self.client.get(
-            'credit/check_grade/'
+            '/credit/check_grade'
         )
         self.assertEqual(response.status_code, 302)
 
@@ -69,9 +69,9 @@ class UpdateMinGradeRequirementFakeViewEnabledTest(UpdateMinGradeRequirementFake
         Test that GET method of fake view.
         """
         response = self.client.get(
-            'credit/check_grade/'
+            '/credit/check_grade/'
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('EdX-ID', response.content)
-        self.assertIn('results_callback', response.content)
+        self.assertIn('Fake Credit Eligibility', response.content)
+

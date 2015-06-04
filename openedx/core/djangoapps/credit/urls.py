@@ -13,7 +13,7 @@ urlpatterns = patterns(
 )
 
 if settings.FEATURES.get('ENABLE_MIN_GRADE_STATUS_UPDATE'):
-    patterns = (url(
+    urlpatterns += (url(
         r'^check_grade',
         UpdateMinGradeRequirementFakeView.as_view(),
         name='UpdateMinRequirementFakeView'
