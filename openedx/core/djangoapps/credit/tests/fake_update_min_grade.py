@@ -1,18 +1,17 @@
 """
-Fake page for updating the minimum grade course requirement status for a user
+Fake page for updating the minimum grade course requirement status for a user.
 """
+
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View
 
-from openedx.core.djangoapps.credit.models import CreditCourse, CreditRequirement, CreditRequirementStatus
-
-from edxmako.shortcuts import render_to_response
 from opaque_keys import InvalidKeyError
 from opaque_keys.edx.keys import CourseKey
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
+from edxmako.shortcuts import render_to_response
+from openedx.core.djangoapps.credit.models import CreditCourse, CreditRequirement, CreditRequirementStatus
 from xmodule.modulestore.django import modulestore
 
 
