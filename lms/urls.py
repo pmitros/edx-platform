@@ -684,6 +684,13 @@ if settings.FEATURES.get("ENABLE_LTI_PROVIDER"):
         url(r'^lti_provider/', include('lti_provider.urls')),
     )
 
+
+# Credit Eligibility urls from opnedx.
+if settings.FEATURES.get('ENABLE_CREDIT_ELIGIBILITY'):
+    urlpatterns += (
+        url(r'^credit/', include('openedx.core.djangoapps.credit.urls')),
+    )
+
 urlpatterns = patterns(*urlpatterns)
 
 if settings.DEBUG:
