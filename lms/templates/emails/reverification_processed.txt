@@ -11,7 +11,7 @@ ${_("We could not verify your identity for the {assessment} assessment in the {c
 ${_("You must verify your identity before the assessment closes on {due_date}.").format(due_date=due_date)}
 %endif
 
-${_("To try to verify your identity again, select the following link:")
+${_("To try to verify your identity again, select the following link:")}
 ${reverify_link}
 
 % elif not is_attempt_allowed or not verification_open:    # if attempts are not allowed or verification window is closed
@@ -19,7 +19,7 @@ ${_("We could not verify your identity for the {assessment} assessment in the {c
 ).format(course_name=course_name, assessment=assessment, used_attempts=used_attempts, allowed_attempts=allowed_attempts)}
 %endif
 
-${_("To go to the courseware, select the following link:")
+${_("To go to the courseware, select the following link:")}
 ${course_link}
 
 ${_("If you have any questions, you can contact student support at {support_link}.").format(support_link=support_link)}
