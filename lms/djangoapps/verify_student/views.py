@@ -42,9 +42,7 @@ from microsite_configuration import microsite
 from openedx.core.djangoapps.user_api.accounts import NAME_MIN_LENGTH
 from openedx.core.djangoapps.user_api.accounts.api import get_account_settings, update_account_settings
 from openedx.core.djangoapps.user_api.errors import UserNotFound, AccountValidationError
-
-from openedx.core.djangoapps.credit.api import get_credit_requirement,\
-    set_credit_requirement_status
+from openedx.core.djangoapps.credit.api import get_credit_requirement, set_credit_requirement_status
 from student.models import CourseEnrollment
 from shoppingcart.models import Order, CertificateItem
 from shoppingcart.processors import (
@@ -964,7 +962,7 @@ def _set_requirement_status(attempt, namespace, status, reason=None):
                 set_credit_requirement_status(
                     attempt.user.username, credit_requirement, status, reason
                 )
-            except:  # pylint: disable=broad-except
+            except Exception:  # pylint: disable=broad-except
                 # Catch exception if unable to add credit requirement
                 # status for user
                 log.warn("Unable to add Credit requirement status for %s", attempt.user.username)
@@ -1034,8 +1032,9 @@ def results_callback(request):
         log.debug("Denying verification for %s", receipt_id)
         attempt.deny(json.dumps(reason), error_code=error_code)
         status = "denied"
-        _set_requirement_status(attempt, 'reverification', 'failed',
-                                {"failure_reason": "Verification Failed"})
+        _set_requirement_status(
+            attempt, 'reverification','failed',{"failure_reason": "Verification Failed"}
+        )
     elif result == "SYSTEM FAIL":
         log.debug("System failure for %s -- resetting to must_retry", receipt_id)
         attempt.system_error(json.dumps(reason), error_code=error_code)

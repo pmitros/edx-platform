@@ -133,9 +133,11 @@ def set_credit_requirement_status(user_name, requirement, status="satisfied", re
         user_name(str): username of the user
         requirement(CreditRequirement): CreditRequirement object
         status(str): status of the requirement
+        reason(dict): reason of the status
     """
     CreditRequirementStatus.add_or_update_requirement_status(
-        user_name, requirement, status, reason)
+        user_name, requirement, status, reason
+    )
 
 
 def _get_requirements_to_disable(old_requirements, new_requirements):
