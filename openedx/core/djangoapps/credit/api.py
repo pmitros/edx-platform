@@ -152,36 +152,38 @@ def get_credit_requirement_status(course_key, username):
         list of requirement statuses
     """
     requirements = CreditRequirement.get_course_requirements(course_key)
+    requirement_list = [requirement.id for requirement in requirements]
+    requirement_statuses = CreditRequirementStatus.get_statuses(requirement_list, username)
     statuses = []
     for requirement in requirements:
-        status = CreditRequirementStatus.get_status(requirement, username)
+        status = None
+        status_date = None
+        for requirement_status in requirement_statuses:
+            if requirement_status.requirement == requirement:
+                status = requirement_status.status
+                status_date = requirement_status.modified.strftime('%m/%d/%Y')
+                break
         statuses.append({
             "namespace": requirement.namespace,
             "name": requirement.name,
             "criteria": requirement.criteria,
-            "status": status.status if status else None,
-            "date": status.created.strftime('%m/%d/%Y') if status else None
+            "status": status,
+            "status_date": status_date,
         })
     return statuses
 
 
-def get_credit_eligibility(username):
-    eligibilities = CreditEligibility.get_user_eligibility(username)
-    user_eligibilities = {}
-    for eligibility in eligibilities:
-        user_eligibilities[unicode(eligibility.course.course_key)] = {
-            "is_eligible": True,
-            "created_at": eligibility.created,
-            "providers": [
-                {
-                    "id": provider.provider_id,
-                    "display_name": provider.display_name
-                }
-                for provider in eligibility.course.get_providers()
-            ]
-        }
+def is_course_credit_eligible(username, course_key):
+    """Check if the given user is eligible for provided course
 
-    return user_eligibilities
+    Args:
+        username(str): The identifier for user
+        course_key (CourseKey): The identifier for course
+
+    Returns:
+        True if user is eligible for the course else False
+    """
+    return CreditEligibility.is_credit_course(course_key, username)
 
 
 def is_credit_course(course_key):

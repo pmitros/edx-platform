@@ -38,7 +38,11 @@ from courseware.courses import (
     sort_by_start_date,
 )
 from courseware.masquerade import setup_masquerade
-from openedx.core.djangoapps.credit.api import get_credit_requirement_status, is_credit_course
+from openedx.core.djangoapps.credit.api import (
+    get_credit_requirement_status,
+    is_course_credit_eligible,
+    is_credit_course
+)
 from courseware.model_data import FieldDataCache
 from .module_render import toc_for_course, get_module_for_descriptor, get_module
 from .entrance_exams import (
@@ -1053,9 +1057,14 @@ def _progress(request, course_key, student_id):
 
     if is_credit_course(course_key):
         requirement_statuses = get_credit_requirement_status(course_key, student.username)
+        if any(requirement['status'] == 'failed' for requirement in requirement_statuses):
+            eligibility_status = "Not Eligible"
+        elif is_course_credit_eligible(student.username, course_key):
+            eligibility_status = "Eligible"
+        else:
+            eligibility_status = "Partial Eligible"
         credit_course = {
-            'show_eligibility_table': True,
-            'eligibility_status': "eligible",
+            'eligibility_status': eligibility_status,
             'requirements': requirement_statuses
         }
     else:

@@ -190,7 +190,7 @@ class CreditRequirementStatus(TimeStampedModel):
     reason = JSONField(default={})
 
     @classmethod
-    def get_status(cls, requirement, username):
+    def get_statuses(cls, requirement, username):
         """ Get credit requirement statuses of given requirement and username
 
         Args:
@@ -200,10 +200,7 @@ class CreditRequirementStatus(TimeStampedModel):
         Returns:
             CreditRequirementStatus object
         """
-        try:
-            return cls.objects.get(requirement=requirement, username=username)
-        except cls.DoesNotExist:
-            return None
+        return cls.objects.filter(requirement_id__in=requirement, username=username)
 
 
 class CreditEligibility(TimeStampedModel):
@@ -223,3 +220,15 @@ class CreditEligibility(TimeStampedModel):
     @classmethod
     def get_user_eligibility(cls, username):
         return cls.objects.filter(username=username).select_related('course', 'course__providers')
+
+    @classmethod
+    def is_credit_course(cls, course_key, username):
+        """Check that given course is credit or not.
+
+        Args:
+            course_key(CourseKey): The course identifier
+
+        Returns:
+            Bool True if the course is marked credit else False
+        """
+        return cls.objects.filter(course__course_key=course_key, username=username).exists()
