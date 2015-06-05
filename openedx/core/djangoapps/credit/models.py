@@ -74,6 +74,7 @@ class CreditCourse(models.Model):
         return cls.objects.get(course_key=course_key, enabled=True)
 
     def get_providers(self):
+        """Return list of all providers"""
         return self.providers.all()
 
 
@@ -219,6 +220,9 @@ class CreditEligibility(TimeStampedModel):
 
     @classmethod
     def get_user_eligibility(cls, username):
+        """
+        returns list of all eligible courses
+        """
         return cls.objects.filter(username=username).select_related('course', 'course__providers')
 
     @classmethod
