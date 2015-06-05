@@ -889,7 +889,7 @@ def _compose_message_reverification_email(
         }
 
         # Allowed attempts is 1 if not set on verification block
-        allowed_attempts = 1 if reverification_block.attempts == 0 else reverification_block.attempts
+        allowed_attempts = reverification_block.attempts + 1
         used_attempts = VerificationStatus.get_user_attempts(user_id, course_key, related_assessment_location)
         left_attempts = allowed_attempts - used_attempts
         is_attempt_allowed = left_attempts > 0

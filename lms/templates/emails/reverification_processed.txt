@@ -1,8 +1,8 @@
 <%namespace file="../main.html" import="stanford_theme_enabled" />
 <%! from django.utils.translation import ugettext as _ %>
 % if status == "approved":
-${_("We have successfully verified your identity for the {assessment} assessment in the {course_name} course. To go to the courseware, select the following {course_link}."
-).format(course_name=course_name, assessment=assessment, course_link=course_link)}
+${_("We have successfully verified your identity for the {assessment} assessment in the {course_name} course."
+).format(course_name=course_name, assessment=assessment)}
 
 % elif is_attempt_allowed and verification_open:    # if attempts are allowed and verification is still open.
 ${_("We could not verify your identity for the {assessment} assessment in the {course_name} course. You have used {used_attempts} out of {allowed_attempts} attempts to verify your identity."
