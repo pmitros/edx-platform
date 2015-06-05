@@ -73,10 +73,6 @@ class CreditCourse(models.Model):
         """
         return cls.objects.get(course_key=course_key, enabled=True)
 
-    def get_providers(self):
-        """Return list of all providers"""
-        return self.providers.all()
-
 
 class CreditRequirement(TimeStampedModel):
     """This model represents a credit requirement.
