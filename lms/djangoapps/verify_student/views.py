@@ -948,8 +948,8 @@ def _send_email(user_id, subject, message):
 
 
 def _set_requirement_status(attempt, namespace, status, reason=None):
-    """
-    Set requirement status and the reason of status for given user in attempt
+    """Set requirement status and the reason of status for given user in
+    attempt.
     """
     checkpoints = VerificationCheckpoint.objects.filter(photo_verification=attempt).all()
     if checkpoints:

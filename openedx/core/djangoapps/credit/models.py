@@ -155,15 +155,16 @@ class CreditRequirement(TimeStampedModel):
 
     @classmethod
     def get_course_requirement(cls, course_key, namespace, name):
-        """ Get credit requirement of a given course
+        """Get credit requirement of a given course.
 
         Args:
             course_key(CourseKey): The identifier for a course
-            namespace(str): namespace of credit course requirements
-            name(str): name of credit course requirement
+            namespace(str): Namespace of credit course requirements
+            name(str): Name of credit course requirement
 
         Returns:
             CreditRequirement object if exists
+
         """
         try:
             return cls.objects.get(
@@ -206,13 +207,13 @@ class CreditRequirementStatus(TimeStampedModel):
 
     @classmethod
     def add_or_update_requirement_status(cls, user_name, requirement, status="satisfied", reason=None):
-        """ Add credit requirement status for given username
+        """Add credit requirement status for given username.
 
         Args:
-            user_name(str): username of the user
-            requirement(CreditRequirement): CreditRequirement object
-            status(str): status of the requirement
-            reason(dict): reason of the status
+            user_name(str): Username of the user
+            requirement(CreditRequirement): 'CreditRequirement' object
+            status(str): Status of the requirement
+            reason(dict): Reason of the status
         """
         requirement_status, created = cls.objects.get_or_create(
             username=user_name,
