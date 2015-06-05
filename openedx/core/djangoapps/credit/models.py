@@ -205,7 +205,7 @@ class CreditRequirementStatus(TimeStampedModel):
     reason = JSONField(default={})
 
     @classmethod
-    def add_or_update_requirement_status(cls, user_name, requirement, status="satisfied", reason={}):
+    def add_or_update_requirement_status(cls, user_name, requirement, status="satisfied", reason=None):
         """ Add credit requirement status for given username
 
         Args:
@@ -220,7 +220,7 @@ class CreditRequirementStatus(TimeStampedModel):
         )
         if not created:
             requirement_status.status = status
-            requirement_status.reason = reason
+            requirement_status.reason = reason if reason else {}
             requirement_status.save()
         return requirement_status
 

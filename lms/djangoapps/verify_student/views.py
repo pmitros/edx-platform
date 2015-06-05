@@ -949,7 +949,10 @@ def _send_email(user_id, subject, message):
     user.email_user(subject, message, from_address)
 
 
-def _set_requirement_status(attempt, namespace, status, reason={}):
+def _set_requirement_status(attempt, namespace, status, reason=None):
+    """
+    Set requirement status and the reason of status for given user in attempt
+    """
     checkpoints = VerificationCheckpoint.objects.filter(photo_verification=attempt).all()
     if checkpoints:
         course_key = checkpoints[0].course_id
@@ -965,6 +968,7 @@ def _set_requirement_status(attempt, namespace, status, reason={}):
                 # Catch exception if unable to add credit requirement
                 # status for user
                 log.warn("Unable to add Credit requirement status for %s", attempt.user.username)
+
 
 @require_POST
 @csrf_exempt  # SS does its own message signing, and their API won't have a cookie value
